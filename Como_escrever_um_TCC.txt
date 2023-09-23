@@ -1,0 +1,45 @@
+1) Introducao:
+	- Descricao do problema
+	- Justificar a importancia do problema e/ou a relevancia para a sociedade
+	- Estado da arte - como os cientistas estao resolvendo o problema
+	- tua PROPOSTA: (state-of-the-art + Modificacoes que voces bolaram para melhor atender a demanda ou resolver o problema)
+		==> Ponto de Partida (state-of-the-art- ou seja ... o que os japoneses estao fazendo atualmente!!) + Modificações propostas --> Resolve o problema ou atende melhor a demanda! 
+		==> Proposta: Mostrar que fazendo as modificacoes propostas sobre o Ponto de Partida vai resolver o problema!!
+	 	==> como tua proposta e´ diferente em relacao ao state-of-the-art
+		==> quais as vantagens que as mudancas podem trazer
+	HIPÓTESE: Fazendo as modificacoes que eu propus no state-of-the-art, vou ter uma melhoria - sera´ que a proposta pode mesmo trazer essas vantagens?
+	Objetivo: implementar o sw e hw e fazer experimentos para testar a hipotese
+		O último paragrafo da Introdução deve conter DUAS frazes:
+		- Portanto, o OBJETIVO DO MEU TRABALHO é ... implementar um Sistema de repimboca da parafuseta, com as técnicais X, Y E Z, para melhorar a tarefa específica de XXX na aplicação de "tal coisa".
+		- Para isso, vou usar a metodologia X, as técnicas YYY, a linguagem C, Linux, um PC, um robo voador XXX...
+
+2) Revisao Bibliografica
+	- hitoricamente como se desenvolveu a area do seu projeto
+	- Tecnicas avaliadas para implementar seu trabalho
+	- Metodologias utilizadas na implementacao do Sistema Proposta
+
+3) Implementacao do Projeto
+	- Descrição top->down da implementação do projeto
+	- Faça uma figura da Arquitetura global do sitema, c0ntendo os módulos principais e como eles se comunicam
+	- Gaste um folha explicando essa figura...
+	- Desenhe um dos módulos e explique... 
+	- Va´ subdividindo o projeto até chegar no parafuso (indivisível!!)... 
+	- Disponibilizar tudo no github
+
+4) Experimentos
+	- para validar e qualificar o projeto
+	- para testar a hipotese
+	- Coletar dados e plotar graficos
+	- Disponibilizar tudo no github
+
+5) Discussao dos resultados 
+	- Comparacao com outros autores
+		- Performance, capacidade de processamento, consumo de energia... 
+		- Vantagens e desvantagens
+
+6) Conclusao
+	- Afinal... Funcionou? 
+	- Conseguiu provar a hipotese??
+	- O quanto conseguiu provar e o que ficou faltando?
+	- Sugerir o que ficou faltando como "trabalhos futuros"
+	- Dizer tambem - o que pode aprender ao desenvolver o projeto
