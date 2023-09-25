@@ -6,16 +6,25 @@
 
 #define N 4  // Número de cidades
 
-int matrizDistancias[N][N] = {
+int matrizDistancias[N][N] = { //AUMENTAR TAMANHO DA MATRIZ (NMERO DE CIDADES) PARA OS TESTES, ESTA ACHANDO A RESOLUCAO MTO RAPIDO
     {0, 10, 15, 20},
     {10, 0, 35, 25},
     {15, 35, 0, 30},
     {20, 25, 30, 0}
 };  // Matriz de distâncias entre as cidades
 
-#define POP_SIZE 100  // Tamanho da população
-#define NUM_GENERATIONS 1000  // Número máximo de gerações
-#define MUTATION_RATE 0.1  // Taxa de mutação
+#define POP_SIZE_ALGEVO 10  // Tamanho da população
+#define NUM_GENERATIONS_ALGEVO 100  // Número máximo de gerações
+#define MUTATION_RATE_ALGEVO 0.1  // Taxa de mutação
+
+ typedef struct{
+    int numGenerations;
+    int popSize;
+    double mutationRate;
+    int crossoverType;
+    int fitness;
+    
+ } IndividualAlgEvo;
 
 //N cidades, entao o genes[N] eh a ordem em que se visita tais cidades
 typedef struct {
@@ -23,9 +32,21 @@ typedef struct {
     int fitness;
 } Individuo;
 
+void inicializarPopulacaoAlgEvo(IndividualAlgEvo populacao[]){
+    for (int i = 0; i < POP_SIZE_ALGEVO; i++) { //inicializado com os valores de 0 a 3 em ordem (indicando as cidades 1, 2 3 e 4)
+        
+        populacao[i].numGenerations = (int)(((double)rand() / RAND_MAX) * 1000);// 0 a 1000
+        populacao[i].popSize = (int)(((double)rand() / RAND_MAX) * 1000);// 0 a 1000
+        populacao[i].mutationRate = (double)rand() / RAND_MAX;//0 a 1
+        populacao[i].crossoverType = (int)rand() % 2;//0 ou 1
+        populacao[i].fitness = -1;
 
-void inicializarPopulacao(Individuo populacao[]) {
-    for (int i = 0; i < POP_SIZE; i++) { //inicializado com os valores de 0 a 3 em ordem (indicando as cidades 1, 2 3 e 4)
+    }
+
+}
+
+void inicializarPopulacao(Individuo populacao[], int popSize) {
+    for (int i = 0; i < popSize; i++) { //inicializado com os valores de 0 a 3 em ordem (indicando as cidades 1, 2 3 e 4)
         for (int j = 0; j < N; j++) {
             populacao[i].genes[j] = j; 
         }
@@ -48,16 +69,44 @@ int calcularFitness(Individuo individuo) {
     return distTotal;
 }
 
-Individuo selecionar(Individuo populacao[], Individuo pais, int* melhor) {
+IndividualAlgEvo findBestAlgEvo(IndividualAlgEvo populacao[],int *best){
+     IndividualAlgEvo melhor = populacao[0];
+    for (int i = 1; i < POP_SIZE_ALGEVO; i++) {//percorre os individuos procurando o melhor
+        if (populacao[i].fitness < melhor.fitness) {
+            melhor = populacao[i];
+            *best = i;
+        }
+    }
+    return melhor;
+}
+
+Individuo selecionar(Individuo populacao[], Individuo pais, int* melhor, int popSize) {
     pais = populacao[0];
 
-    for(int i=0; i<POP_SIZE; i++){//percorre a populacao procurando o melhor individuo, o que possui o melhor (menor valor) do fitness
+    for(int i=0; i<popSize; i++){//percorre a populacao procurando o melhor individuo, o que possui o melhor (menor valor) do fitness
         if(populacao[i].fitness < pais.fitness){
             pais = populacao[i];
             *melhor = i;
         }
     }
     return pais;
+}
+
+void crossoverAlgEvo(IndividualAlgEvo *individual, IndividualAlgEvo best){
+    if(best.crossoverType){
+        individual->popSize = (individual->popSize + best.popSize)/2;
+        individual->mutationRate = (individual->mutationRate + best.mutationRate)/2;
+    }
+    else{
+        if ((double)rand() / RAND_MAX < 0.5) {
+            individual->popSize =  best.popSize;
+        }else{
+            individual->mutationRate =  best.mutationRate;
+        }
+
+
+    }
+
 }
 
 void crossover(Individuo populacao[], Individuo pai, Individuo *filhos, bool melhor) {
@@ -119,6 +168,30 @@ void crossover(Individuo populacao[], Individuo pai, Individuo *filhos, bool mel
 
 }
 
+void mutateAlgEvo(IndividualAlgEvo *individual){
+     if ((double)rand() / RAND_MAX < MUTATION_RATE_ALGEVO) {//respeitando a taxa de mutacao acrescenta um pequeno valor ao individuo
+        if((int)rand() % 2){
+            individual->popSize += ((double)rand() / RAND_MAX) * (individual->popSize/2);// parametro do alg1 a ser modificado   
+
+        }else{
+            individual->popSize -= ((double)rand() / RAND_MAX) * (individual->popSize/2);// parametro do alg1 a ser modificado   
+        }
+    }
+
+     if ((double)rand() / RAND_MAX < MUTATION_RATE_ALGEVO) {//respeitando a taxa de mutacao acrescenta um pequeno valor ao individuo
+        if((int)rand() % 2){
+            individual->mutationRate += ((double)rand() / RAND_MAX) * (individual->mutationRate/2);// parametro do alg1 a ser modificado 
+        }else{
+            individual->mutationRate -= ((double)rand() / RAND_MAX) * (individual->mutationRate/2);// parametro do alg1 a ser modificado   
+        }
+    }
+
+     if ((double)rand() / RAND_MAX < MUTATION_RATE_ALGEVO) {//respeitando a taxa de mutacao acrescenta um pequeno valor ao individuo
+        individual->crossoverType = 1 - individual->crossoverType ;// parametro do alg1 a ser modificado 
+        
+    }
+}
+
 void mutate(Individuo *individuo) {
     int taxaMutacao = 3; /// parametro do alg1 a ser modificado 
     int mutacao = rand() % 10;
@@ -137,73 +210,117 @@ void mutate(Individuo *individuo) {
 
 int main() {
     srand(time(NULL));
+    IndividualAlgEvo populacaoAlgEvo[POP_SIZE_ALGEVO];
+    int controleBest;
 
-    //inicializando variaveis de populacao
-    Individuo populacao[POP_SIZE];
-    Individuo novaPopulacao[POP_SIZE];
-    Individuo *novaPopulacao2[POP_SIZE];
+    inicializarPopulacaoAlgEvo(populacaoAlgEvo);
+    IndividualAlgEvo melhorAlgEvo = populacaoAlgEvo[0];
 
-    Individuo melhoresIndividuos[NUM_GENERATIONS];
+    for (int geracao = 0; geracao < NUM_GENERATIONS_ALGEVO; geracao++){
+        for (int pop = 0; pop < POP_SIZE_ALGEVO; pop++){   
+           //inicializando variaveis de populacao
+            int controleGeracao = 0;
+            int fitnessAlgEvo = -1; //quantas geracoes demoraram para se alcancar uma resposta solida
 
-    inicializarPopulacao(populacao);
+            Individuo populacao[populacaoAlgEvo[pop].popSize];
+            Individuo novaPopulacao[populacaoAlgEvo[pop].popSize];
+            Individuo *novaPopulacao2[populacaoAlgEvo[pop].popSize];
+            Individuo melhoresIndividuos[populacaoAlgEvo[pop].numGenerations];
 
-    for (int i = 0; i < POP_SIZE; i++) {
+            inicializarPopulacao(populacao,populacaoAlgEvo[pop].popSize);
 
-        populacao[i].fitness = calcularFitness(populacao[i]);//calculo do fitness da geracao 0
+            for (int i = 0; i < populacaoAlgEvo[pop].popSize; i++) {
 
-    }
+                populacao[i].fitness = calcularFitness(populacao[i]);//calculo do fitness da geracao 0
 
-    for (int geracao = 0; geracao < NUM_GENERATIONS; geracao++) {//para cada NUM_GENERATIONS geracoes de POP_SIZE populacoes 
-        
-        Individuo pais;
-        int melhorTodos = 0;
-        pais = selecionar(populacao, pais, &melhorTodos);//selecao do melhor da geracao
-        
-        
-        bool melhorControle = false;//variavel de controle para impedir a alteraraca do melhor da geracao
-        for (int i = 0; i < POP_SIZE; i ++) {//crossover com o melhor de todos e mutacao aleatorioa
-
-            melhorControle = (melhorTodos == i) ? true : false;
-            crossover(populacao, pais, &novaPopulacao[i], melhorControle);
-            mutate(&novaPopulacao[i]);
-        
-        }    
-            
-        for (int i = 0; i < POP_SIZE; i++) {//nova populacao eh substituida
-            populacao[i] = novaPopulacao[i];
-        }
-
-        for (int i = 0; i < POP_SIZE; i++) {// calculo do fitness da nova geracao
-            populacao[i].fitness = calcularFitness(populacao[i]);
-        }
-
-
-        int melhorFitness = populacao[0].fitness;
-        melhoresIndividuos[geracao] = populacao[0];
-        for (int i = 1; i < POP_SIZE; i++) { //guarda-se o melhor individuo dessa geracao
-            if (populacao[i].fitness < melhorFitness) {
-                melhorFitness = populacao[i].fitness;
-                melhoresIndividuos[geracao] = populacao[i];
             }
+
+           // for (int j = 0; j < populacaoAlgEvo[pop].numGenerations; j++) {//para cada NUM_GENERATIONS geracoes de POP_SIZE populacoes 
+            while(controleGeracao < 5){   
+                fitnessAlgEvo += 1;
+                Individuo pais;
+                int melhorTodos = 0;
+                pais = selecionar(populacao, pais, &melhorTodos, populacaoAlgEvo[pop].popSize);//selecao do melhor da geracao
+                
+                
+                bool melhorControle = false;//variavel de controle para impedir a alteraraca do melhor da geracao
+                for (int i = 0; i < populacaoAlgEvo[pop].popSize; i ++) {//crossover com o melhor de todos e mutacao aleatorioa
+
+                    melhorControle = (melhorTodos == i) ? true : false;
+                    crossover(populacao, pais, &novaPopulacao[i], melhorControle);
+                    mutate(&novaPopulacao[i]);
+                
+                }    
+                    
+                for (int i = 0; i < populacaoAlgEvo[pop].popSize; i++) {//nova populacao eh substituida
+                    populacao[i] = novaPopulacao[i];
+                }
+
+                for (int i = 0; i < populacaoAlgEvo[pop].popSize; i++) {// calculo do fitness da nova geracao
+                    populacao[i].fitness = calcularFitness(populacao[i]);
+                }
+
+
+                int melhorFitness = populacao[0].fitness;
+                melhoresIndividuos[fitnessAlgEvo] = populacao[0];
+                for (int i = 1; i < populacaoAlgEvo[pop].popSize; i++) { //guarda-se o melhor individuo dessa geracao
+                    if (populacao[i].fitness < melhorFitness) {
+                        melhorFitness = populacao[i].fitness;
+                        melhoresIndividuos[fitnessAlgEvo] = populacao[i];
+                    }
+                }
+
+                if(fitnessAlgEvo > 0 && (melhoresIndividuos[fitnessAlgEvo].fitness == melhoresIndividuos[fitnessAlgEvo-1].fitness)){
+                    controleGeracao += 1;
+                }
+             
+            }
+            
+            populacaoAlgEvo[pop].fitness = fitnessAlgEvo; //quantas geracoes demoraram para chegar a uma resposta solida (5 respostas iguais seguidas)
+
+            /*
+            Individuo melhorIndividuo = melhoresIndividuos[0];      
+            int melhorFitness = melhorIndividuo.fitness;
+            for (int i = 1; i < populacaoAlgEvo[pop].numGenerations; i++) {//depois de calculadas todas as geracacoes encontra-se o melhor de todas elas
+                if (melhoresIndividuos[i].fitness < melhorFitness) {
+                    melhorFitness = melhoresIndividuos[i].fitness;
+                    melhorIndividuo = melhoresIndividuos[i];
+                }
+            }
+
+            printf("Melhor distância percorrida: %d\n", populacaoAlgEvo[pop].fitness);
+            printf("Melhor rota: ");
+            for (int i = 0; i < N; i++) {
+                printf("%d ", melhoresIndividuos[fitnessAlgEvo].genes[i]);
+            }
+            printf("\n");
+            */
+            printf("Melhor distância percorrida: %d\n", populacaoAlgEvo[pop].fitness);
+
+            
         }
-        
+
+
+        melhorAlgEvo = findBestAlgEvo(populacaoAlgEvo,&controleBest);
+        for(int pop = 0; pop < POP_SIZE_ALGEVO; pop++){
+            if(controleBest != pop){
+                crossoverAlgEvo(&populacaoAlgEvo[pop], melhorAlgEvo);
+                mutateAlgEvo(&populacaoAlgEvo[pop]); 
+            }
+            
+        }
+
+        //selecao do melhor algevo
+        //crossover algevo
+        //mutate algevo
+
     }
 
-    int melhorFitness = melhoresIndividuos[0].fitness;
-    Individuo melhorIndividuo = melhoresIndividuos[0];
-    for (int i = 1; i < NUM_GENERATIONS; i++) {//depois de calculadas todas as geracacoes encontra-se o melhor de todas elas
-        if (melhoresIndividuos[i].fitness < melhorFitness) {
-            melhorFitness = melhoresIndividuos[i].fitness;
-            melhorIndividuo = melhoresIndividuos[i];
-        }
-    }
+    melhorAlgEvo = findBestAlgEvo(populacaoAlgEvo,&controleBest);
+    printf("Melhor de todos\nPopSize: %d\nMutationRate: %lf\nCrossType: %d\nFitness: %d\n", melhorAlgEvo.popSize,melhorAlgEvo.mutationRate,melhorAlgEvo.crossoverType,melhorAlgEvo.fitness);
 
-    printf("Melhor distância percorrida: %d\n", melhorFitness);
-    printf("Melhor rota: ");
-    for (int i = 0; i < N; i++) {
-        printf("%d ", melhorIndividuo.genes[i]);
-    }
-    printf("\n");
+
+   
 
     return 0;
 }
