@@ -1,8 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <math.h>
+#include <math.h> 
 #include <time.h>
-//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   token git
+//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   token git
 #define POP_SIZE_ALGEVO 100 //tamanho populacao
 #define NUM_GENERATIONS_ALGEVO 100 // geracoes
 #define MUTATION_RATE_ALGEVO 0.2 // taxa de mutacao // parametro do alg1 a ser modificado 

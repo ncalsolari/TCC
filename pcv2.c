@@ -310,10 +310,6 @@ int main() {
             
         }
 
-        //selecao do melhor algevo
-        //crossover algevo
-        //mutate algevo
-
     }
 
     melhorAlgEvo = findBestAlgEvo(populacaoAlgEvo,&controleBest);
