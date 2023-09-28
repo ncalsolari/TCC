@@ -32,7 +32,7 @@ typedef struct {
     int fitness;
 } Individuo;
 
-void inicializarPopulacaoAlgEvo(IndividualAlgEvo populacao[]){
+void initializePopulationAlgEvo(IndividualAlgEvo populacao[]){
     for (int i = 0; i < POP_SIZE_ALGEVO; i++) { //inicializado com os valores de 0 a 3 em ordem (indicando as cidades 1, 2 3 e 4)
         
         populacao[i].numGenerations = (int)(((double)rand() / RAND_MAX) * 1000);// 0 a 1000
@@ -45,7 +45,7 @@ void inicializarPopulacaoAlgEvo(IndividualAlgEvo populacao[]){
 
 }
 
-void inicializarPopulacao(Individuo populacao[], int popSize) {
+void initializePopulation(Individuo populacao[], int popSize) {
     for (int i = 0; i < popSize; i++) { //inicializado com os valores de 0 a 3 em ordem (indicando as cidades 1, 2 3 e 4)
         for (int j = 0; j < N; j++) {
             populacao[i].genes[j] = j; 
@@ -60,7 +60,7 @@ void inicializarPopulacao(Individuo populacao[], int popSize) {
     }
 }
 
-int calcularFitness(Individuo individuo) {
+int calculateFitness(Individuo individuo) {
     int distTotal = 0;
     for (int i = 0; i < N - 1; i++) { //percorre e soma as distancias entre caminhos (cidade atual + proxima cidade)
         distTotal += matrizDistancias[individuo.genes[i]][individuo.genes[i + 1]];
@@ -80,7 +80,7 @@ IndividualAlgEvo findBestAlgEvo(IndividualAlgEvo populacao[],int *best){
     return melhor;
 }
 
-Individuo selecionar(Individuo populacao[], Individuo pais, int* melhor, int popSize) {
+Individuo selectParent(Individuo populacao[], Individuo pais, int* melhor, int popSize) {
     pais = populacao[0];
 
     for(int i=0; i<popSize; i++){//percorre a populacao procurando o melhor individuo, o que possui o melhor (menor valor) do fitness
@@ -93,11 +93,11 @@ Individuo selecionar(Individuo populacao[], Individuo pais, int* melhor, int pop
 }
 
 void crossoverAlgEvo(IndividualAlgEvo *individual, IndividualAlgEvo best){
-    if(best.crossoverType){
+    if(best.crossoverType){//tipo 1 de crossover, media dos valores pai+filho
         individual->popSize = (individual->popSize + best.popSize)/2;
         individual->mutationRate = (individual->mutationRate + best.mutationRate)/2;
     }
-    else{
+    else{//tipo 2 de crossover, iguala um dos valroes do filho igual ao pai
         if ((double)rand() / RAND_MAX < 0.5) {
             individual->popSize =  best.popSize;
         }else{
@@ -213,7 +213,7 @@ int main() {
     IndividualAlgEvo populacaoAlgEvo[POP_SIZE_ALGEVO];
     int controleBest;
 
-    inicializarPopulacaoAlgEvo(populacaoAlgEvo);
+    initializePopulationAlgEvo(populacaoAlgEvo);
     IndividualAlgEvo melhorAlgEvo = populacaoAlgEvo[0];
 
     for (int geracao = 0; geracao < NUM_GENERATIONS_ALGEVO; geracao++){
@@ -227,11 +227,11 @@ int main() {
             Individuo *novaPopulacao2[populacaoAlgEvo[pop].popSize];
             Individuo melhoresIndividuos[populacaoAlgEvo[pop].numGenerations];
 
-            inicializarPopulacao(populacao,populacaoAlgEvo[pop].popSize);
+            initializePopulation(populacao,populacaoAlgEvo[pop].popSize);
 
             for (int i = 0; i < populacaoAlgEvo[pop].popSize; i++) {
 
-                populacao[i].fitness = calcularFitness(populacao[i]);//calculo do fitness da geracao 0
+                populacao[i].fitness = calculateFitness(populacao[i]);//calculo do fitness da geracao 0
 
             }
 
@@ -240,7 +240,7 @@ int main() {
                 fitnessAlgEvo += 1;
                 Individuo pais;
                 int melhorTodos = 0;
-                pais = selecionar(populacao, pais, &melhorTodos, populacaoAlgEvo[pop].popSize);//selecao do melhor da geracao
+                pais = selectParent(populacao, pais, &melhorTodos, populacaoAlgEvo[pop].popSize);//selecao do melhor da geracao
                 
                 
                 bool melhorControle = false;//variavel de controle para impedir a alteraraca do melhor da geracao
@@ -257,7 +257,7 @@ int main() {
                 }
 
                 for (int i = 0; i < populacaoAlgEvo[pop].popSize; i++) {// calculo do fitness da nova geracao
-                    populacao[i].fitness = calcularFitness(populacao[i]);
+                    populacao[i].fitness = calculateFitness(populacao[i]);
                 }
 
 

@@ -24,7 +24,7 @@ typedef struct {
 } Individuo;
 
 
-void inicializarPopulacao(Individuo populacao[]) {
+void initializePopulation(Individuo populacao[]) {
     for (int i = 0; i < POP_SIZE; i++) { //inicializado com os valores de 0 a 3 em ordem (indicando as cidades 1, 2 3 e 4)
         for (int j = 0; j < N; j++) {
             populacao[i].genes[j] = j; 
@@ -39,7 +39,7 @@ void inicializarPopulacao(Individuo populacao[]) {
     }
 }
 
-int calcularFitness(Individuo individuo) {
+int calculateFitness(Individuo individuo) {
     int distTotal = 0;
     for (int i = 0; i < N - 1; i++) { //percorre e soma as distancias entre caminhos (cidade atual + proxima cidade)
         distTotal += matrizDistancias[individuo.genes[i]][individuo.genes[i + 1]];
@@ -48,7 +48,7 @@ int calcularFitness(Individuo individuo) {
     return distTotal;
 }
 
-Individuo selecionar(Individuo populacao[], Individuo pais, int* melhor) {
+Individuo selectParent(Individuo populacao[], Individuo pais, int* melhor) {
     pais = populacao[0];
 
     for(int i=0; i<POP_SIZE; i++){//percorre a populacao procurando o melhor individuo, o que possui o melhor (menor valor) do fitness
@@ -145,11 +145,11 @@ int main() {
 
     Individuo melhoresIndividuos[NUM_GENERATIONS];
 
-    inicializarPopulacao(populacao);
+    initializePopulation(populacao);
 
     for (int i = 0; i < POP_SIZE; i++) {
 
-        populacao[i].fitness = calcularFitness(populacao[i]);//calculo do fitness da geracao 0
+        populacao[i].fitness = calculateFitness(populacao[i]);//calculo do fitness da geracao 0
 
     }
 
@@ -157,7 +157,7 @@ int main() {
         
         Individuo pais;
         int melhorTodos = 0;
-        pais = selecionar(populacao, pais, &melhorTodos);//selecao do melhor da geracao
+        pais = selectParent(populacao, pais, &melhorTodos);//selecao do melhor da geracao
         
         
         bool melhorControle = false;//variavel de controle para impedir a alteraraca do melhor da geracao
@@ -174,7 +174,7 @@ int main() {
         }
 
         for (int i = 0; i < POP_SIZE; i++) {// calculo do fitness da nova geracao
-            populacao[i].fitness = calcularFitness(populacao[i]);
+            populacao[i].fitness = calculateFitness(populacao[i]);
         }
 
 

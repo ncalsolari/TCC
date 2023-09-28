@@ -21,10 +21,6 @@ typedef struct {
     double fitness;
 } Individual;
 
-double evaluateFitnessAlgEvo(double x){
-    return x;
-}
-
 double evaluateFitness(double x) {//valor do individuo no contexto
     return fabs(3 * x * x - 12 * x + 9);
 }
@@ -46,11 +42,11 @@ void initializePopulation(Individual populacao[], int popSize) {
 }
 
 void crossoverAlgEvo(IndividualAlgEvo *individual, IndividualAlgEvo best){
-    if(best.crossoverType){
+    if(best.crossoverType){//tipo 1 de crossover, media dos valores pai+filho
         individual->popSize = (individual->popSize + best.popSize)/2;
         individual->mutationRate = (individual->mutationRate + best.mutationRate)/2;
     }
-    else{
+    else{//tipo 2 de crossover, iguala um dos valroes do filho igual ao pai
         if ((double)rand() / RAND_MAX < 0.5) {
             individual->popSize =  best.popSize;
         }else{
