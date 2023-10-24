@@ -3,28 +3,24 @@
 #include <time.h>
 #include <stdbool.h> 
 
-
-#define N 4  // Número de cidades
-
-int matrizDistancias[N][N] = { //AUMENTAR TAMANHO DA MATRIZ (NMERO DE CIDADES) PARA OS TESTES, ESTA ACHANDO A RESOLUCAO MTO RAPIDO
-    {0, 10, 15, 20},
-    {10, 0, 35, 25},
-    {15, 35, 0, 30},
-    {20, 25, 30, 0}
-};  // Matriz de distâncias entre as cidades
-
 #define POP_SIZE_ALGEVO 10  // Tamanho da população
 #define NUM_GENERATIONS_ALGEVO 100  // Número máximo de gerações
 #define MUTATION_RATE_ALGEVO 0.1  // Taxa de mutação
+#define N 10  // Número de cidades
 
- typedef struct{
+
+int matrizDistancias[N][N]; //AUMENTAR TAMANHO DA MATRIZ (NMERO DE CIDADES) PARA OS TESTES, ESTA ACHANDO A RESOLUCAO MTO RAPIDO
+// Matriz de distâncias entre as cidades
+
+
+typedef struct{
     int numGenerations;
     int popSize;
     double mutationRate;
     int crossoverType;
     int fitness;
     
- } IndividualAlgEvo;
+} IndividualAlgEvo;
 
 //N cidades, entao o genes[N] eh a ordem em que se visita tais cidades
 typedef struct {
@@ -215,6 +211,26 @@ int main() {
 
     initializePopulationAlgEvo(populacaoAlgEvo);
     IndividualAlgEvo melhorAlgEvo = populacaoAlgEvo[0];
+
+
+    for (int i = 0; i < N; i++) {
+        for (int j = 0; j < N; j++) {
+             matrizDistancias[i][j] = rand() % 100; // Gere números aleatórios entre 0 e 99 
+            // Reflete os valores para a metade inferior da matriz
+            matrizDistancias[j][i] = matrizDistancias[i][j];
+        }
+    }
+
+        // Imprime a matriz
+    for (int i = 0; i < N; i++) {
+        for (int j = 0; j < N; j++) {
+            printf("%4d ", matrizDistancias[i][j]);
+        }
+        printf("\n");
+    }
+
+
+
 
     for (int geracao = 0; geracao < NUM_GENERATIONS_ALGEVO; geracao++){
         for (int pop = 0; pop < POP_SIZE_ALGEVO; pop++){   

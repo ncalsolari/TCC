@@ -8,6 +8,7 @@
 #define NUM_GENERATIONS_ALGEVO 100
 #define MUTATION_RATE_ALGEVO 0.1
 #define MAX_GENERATIONS 200
+#define NUM_ITEMS 5
 
 
 
@@ -16,15 +17,9 @@ typedef struct {
     int valor;
 } Item;
 
-Item items[] = { //peso e valor dos itens decidido arbitrariamente
-    {2, 12},
-    {1, 10},
-    {3, 20},
-    {2, 15},
-    {4, 4}
-};
+Item items[NUM_ITEMS];
 
-int capacidadeMochila = 5;
+int capacidadeMochila = 15;
 
 
 typedef struct {
@@ -177,6 +172,11 @@ int main() {
 
     initializePopulationAlgEvo(populacaoAlgEvo);
     IndividualAlgEvo melhorAlgEvo = populacaoAlgEvo[0];
+
+    for (int i = 0; i < NUM_ITEMS; i++) {
+        items[i].peso = 1 + rand() % 10;  // Peso aleatório entre 1 e 10 (ajuste conforme necessário)
+        items[i].valor = 1 + rand() % 20; // Valor aleatório entre 1 e 20 (ajuste conforme necessário)
+    }
 
     for(int geracao = 0; geracao < NUM_GENERATIONS_ALGEVO; geracao++){
         for(int pop = 0; pop < POP_SIZE_ALGEVO; pop++){

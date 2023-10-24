@@ -4,7 +4,7 @@
 #include <time.h>
 
 #define POP_SIZE 100 //tamanho populacao
-#define NUM_GENERATIONS 1000000000 // geracoes
+#define NUM_GENERATIONS 1000000 // geracoes
 #define MUTATION_RATE 0.2 // taxa de mutacao // parametro do alg1 a ser modificado 
 #define TARGET_FITNESS 0.0001 //criterio para validacao da resposta
 
@@ -14,12 +14,14 @@ typedef struct {
 } Individual;
 
 double evaluateFitness(double x) {//valor do individuo no contexto
-    return fabs(3 * x * x - 12 * x + 9);
+    return fabs((2*cos(0.039*x) + 5*sin(0.05*x) + 0.5*cos(0.01*x) + 10*sin(0.07*x) + 5*sin(0.1*x) + 5*sin(0.035*x))*10+500);
+   // return fabs(3 * x * x - 12 * x + 9);
 }
 
 void initializePopulation(Individual populacao[]) {
+    srand( (unsigned)time(NULL) );
     for (int i = 0; i < POP_SIZE; i++) {// inicializa com valores aleatorios e calcula seu valor na funcao
-        populacao[i].x = (double)rand() / RAND_MAX * 10.0 - 5.0;
+        populacao[i].x = ((double)rand() * 2000)/RAND_MAX;
         populacao[i].fitness = evaluateFitness(populacao[i].x);
     }
 }
@@ -56,14 +58,12 @@ int main() {
     initializePopulation(populacao);
 
     Individual melhor = findBest(populacao);//melhor da primeira geracao
-    
     for (int geracao = 0; geracao < NUM_GENERATIONS; geracao++) {//para NUM_GENERATIONS geracoes e POP_SIZE individuos
         for (int i = 0; i < POP_SIZE; i++) {
             crossover(&populacao[i], melhor);
             mutate(&populacao[i]);
             populacao[i].fitness = evaluateFitness(populacao[i].x);
         }
-        
         melhor = findBest(populacao);
         
         if (melhor.fitness < TARGET_FITNESS) {
@@ -71,6 +71,8 @@ int main() {
             break;
         }
     }
+    printf("Aproximação da raiz encontrada: x = %lf, f'(x) = %lf\n", melhor.x, melhor.fitness);
+
     
     return 0;
 }
