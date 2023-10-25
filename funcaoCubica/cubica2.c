@@ -22,7 +22,8 @@ typedef struct {
 } Individual;
 
 double evaluateFitness(double x) {//valor do individuo no contexto
-    return fabs(3 * x * x - 12 * x + 9);
+    return fabs((2*cos(0.039*x) + 5*sin(0.05*x) + 0.5*cos(0.01*x) + 10*sin(0.07*x) + 5*sin(0.1*x) + 5*sin(0.035*x))*10+500);
+    //return fabs(3 * x * x - 12 * x + 9);
 }
 
 void initializePopulationAlgEvo(IndividualAlgEvo populacao[]){

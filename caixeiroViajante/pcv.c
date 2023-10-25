@@ -4,18 +4,15 @@
 #include <stdbool.h> 
 
 
-#define N 4  // Número de cidades
-
-int matrizDistancias[N][N] = {
-    {0, 10, 15, 20},
-    {10, 0, 35, 25},
-    {15, 35, 0, 30},
-    {20, 25, 30, 0}
-};  // Matriz de distâncias entre as cidades
 
 #define POP_SIZE 100  // Tamanho da população
-#define NUM_GENERATIONS 1000  // Número máximo de gerações
+#define NUM_GENERATIONS 10000  // Número máximo de gerações
 #define MUTATION_RATE 0.1  // Taxa de mutação
+#define N 100  // Número de cidades
+
+
+int matrizDistancias[N][N]; //AUMENTAR TAMANHO DA MATRIZ (NMERO DE CIDADES) PARA OS TESTES, ESTA ACHANDO A RESOLUCAO MTO RAPIDO
+  // Matriz de distâncias entre as cidades
 
 //N cidades, entao o genes[N] eh a ordem em que se visita tais cidades
 typedef struct {
@@ -69,7 +66,7 @@ void crossover(Individuo populacao[], Individuo pai, Individuo *filhos, bool mel
   
     if(!melhor){ //o melhor individuo nao sofre crossover
 
-         for(int a = 0; a < N; a++){// inicializacao de variaveis de controle
+        for(int a = 0; a < N; a++){// inicializacao de variaveis de controle
             controle[a] = 0;  //controle das cidades ja visitadas
             cruzados[a][0] = 0; //se posicao (ordem das cidades) foi modificada entao 1 
             cruzados[a][1] = -1; //valor da posicao modificada (qual cidade)
@@ -80,33 +77,33 @@ void crossover(Individuo populacao[], Individuo pai, Individuo *filhos, bool mel
         viriam a formar caminhos inválidos*/
 
 
-            for(int j = 0; j<genesCruzados; j++){
+        for(int j = 0; j<genesCruzados; j++){
 
-                int geneRandon = rand() % N; //posiçao dos genes q vou copiar do pai
-                filhos->genes[geneRandon] = pai.genes[geneRandon]; //valor do gene
-                cruzados[geneRandon][0] = 1; //salvo posicao modificada
-                cruzados[geneRandon][1] = pai.genes[geneRandon];
-                controle[pai.genes[geneRandon]] = 1;
-            }
+            int geneRandon = rand() % N; //posiçao dos genes q vou copiar do pai
+            filhos->genes[geneRandon] = pai.genes[geneRandon]; //valor do gene
+            cruzados[geneRandon][0] = 1; //salvo posicao modificada
+            cruzados[geneRandon][1] = pai.genes[geneRandon];
+            controle[pai.genes[geneRandon]] = 1;
+        }
 
-            for(int k = 0; k<N; k++){
+        for(int k = 0; k<N; k++){
 
-                if(cruzados[k][0] != 1){ //quer dizer que nao modiqfiquei ainda esse gene
-                    for(int l = 0; l < N; l++){
-                        if (controle[l] == 0){ //varro pra achar uma cidade ainda nao visitada
-                            filhos->genes[k] = l; //atribuo essa cidade ao caminho
-                            cruzados[k][0] = 1; //atualizo variaveis de controle
-                            cruzados[k][1] = l; //salvo qual gene modifiquei e qual seu valor
-                            controle[l] = 1; //salvo que a cidade l ja foi visitada
-                            l = N; //pulo para analisar o proximo gene
-                         
-                        }
-
+            if(cruzados[k][0] != 1){ //quer dizer que nao modiqfiquei ainda esse gene
+                for(int l = 0; l < N; l++){
+                    if (controle[l] == 0){ //varro pra achar uma cidade ainda nao visitada
+                        filhos->genes[k] = l; //atribuo essa cidade ao caminho
+                        cruzados[k][0] = 1; //atualizo variaveis de controle
+                        cruzados[k][1] = l; //salvo qual gene modifiquei e qual seu valor
+                        controle[l] = 1; //salvo que a cidade l ja foi visitada
+                        l = N; //pulo para analisar o proximo gene
+                        
                     }
+
                 }
-
-
             }
+
+
+        }
 
     }else{
         for(int i = 0; i < N; i++){
@@ -146,6 +143,24 @@ int main() {
     Individuo melhoresIndividuos[NUM_GENERATIONS];
 
     initializePopulation(populacao);
+
+
+
+    for (int i = 0; i < N; i++) {
+        for (int j = 0; j < N; j++) {
+             matrizDistancias[i][j] = rand() % 100; // Gere números aleatórios entre 0 e 99 
+            // Reflete os valores para a metade inferior da matriz
+            matrizDistancias[j][i] = matrizDistancias[i][j];
+        }
+    }
+
+        // Imprime a matriz
+    for (int i = 0; i < N; i++) {
+        for (int j = 0; j < N; j++) {
+            printf("%4d ", matrizDistancias[i][j]);
+        }
+        printf("\n");
+    }
 
     for (int i = 0; i < POP_SIZE; i++) {
 
