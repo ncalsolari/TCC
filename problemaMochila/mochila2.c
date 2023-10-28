@@ -8,7 +8,7 @@
 #define NUM_GENERATIONS_ALGEVO 100
 #define MUTATION_RATE_ALGEVO 0.1
 #define MAX_GENERATIONS 200
-#define NUM_ITEMS 5
+#define NUM_ITEMS 50
 
 
 
@@ -32,7 +32,7 @@ typedef struct {
 
 
 typedef struct {
-    int cromossomo[5];  // 1 e 0 para representar itens incluidos ou não, respectivamente
+    int cromossomo[NUM_ITEMS];  // 1 e 0 para representar itens incluidos ou não, respectivamente
     int fitness;
 } Individual;
 
@@ -48,7 +48,7 @@ void initializePopulationAlgEvo(IndividualAlgEvo populacao[]){
 
 void initializePopulation(Individual populacao[], int popSize) {
     for (int i = 0; i < popSize; i++) {//inicializa a populacao incluindo aleatoriamente os itens
-        for (int j = 0; j < sizeof(items) / sizeof(Item); j++) {
+        for (int j = 0; j < NUM_ITEMS; j++) {
             populacao[i].cromossomo[j] = rand() % 2; // Inicialização aleatória
         }
     }
@@ -58,7 +58,7 @@ int calculateFitness(Individual individual) {
     int pesoTotal = 0;
     int valorTotal = 0;
 
-    for (int i = 0; i < sizeof(items) / sizeof(Item); i++) {//calculo do peso e valor da mochila
+    for (int i = 0; i < NUM_ITEMS; i++) {//calculo do peso e valor da mochila
         if (individual.cromossomo[i] == 1) {
             pesoTotal += items[i].peso;
             valorTotal += items[i].valor;
@@ -93,7 +93,7 @@ void crossoverAlgEvo(IndividualAlgEvo *individual, IndividualAlgEvo best){
 void crossover(Individual *individual, Individual pai, bool melhor){
     if(!melhor){
 
-        for (int i = 0; i < sizeof(items) / sizeof(Item); i++) {//iguala o filho com o melhor candidato
+        for (int i = 0; i < NUM_ITEMS; i++) {//iguala o filho com o melhor candidato
 
             individual->cromossomo [i]= pai.cromossomo[i];
 
@@ -134,7 +134,7 @@ void mutateAlgEvo(IndividualAlgEvo *individual){
 }
 
 void mutate(Individual *individual, double mutationRate) {
-    for (int i = 0; i < sizeof(items) / sizeof(Item); i++) {//respeitando a taxa de mutacao altera um ou mais itens aleatoriamente
+    for (int i = 0; i < NUM_ITEMS; i++) {//respeitando a taxa de mutacao altera um ou mais itens aleatoriamente
         if ((double)rand() / RAND_MAX < mutationRate) {
             individual->cromossomo[i] = 1 - individual->cromossomo[i]; 
         }
@@ -242,7 +242,7 @@ int main() {
 
             printf("Melhor valor encontrado: %d\n", melhorFitness.fitness);
             printf("Itens selecionados:\n");
-            for (int i = 0; i < sizeof(items) / sizeof(Item); i++) {
+            for (int i = 0; i < NUM_ITEMS; i++) {
                 if (melhorFitness.cromossomo[i] == 1) {
                     printf("Item %d - Peso: %d, Valor: %d\n", i + 1, items[i].peso, items[i].valor);
                 }
