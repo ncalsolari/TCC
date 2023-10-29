@@ -273,7 +273,7 @@ int main() {
 
         melhorAlgEvo = findBestAlgEvo(populacaoAlgEvo,&controleBest);
         // write to the text file
-        fprintf(fp, "%d, %d, %d;\n",geracao, melhorAlgEvo.fitness, melhorAlgEvo.melhorResultado.fitness);
+        fprintf(fp, "%d, %d, %lf;\n",geracao, melhorAlgEvo.fitness, melhorAlgEvo.melhorResultado.fitness);
 
         for(int pop = 0; pop < POP_SIZE_ALGEVO; pop++){
             if(controleBest != pop){
