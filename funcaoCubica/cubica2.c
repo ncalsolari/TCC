@@ -3,7 +3,7 @@
 #include <math.h> 
 #include <time.h>
 #include <limits.h>
-//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   token git
+//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   token git
 #define POP_SIZE_ALGEVO 100 //tamanho populacao
 #define NUM_GENERATIONS_ALGEVO 200 // geracoes
 #define MUTATION_RATE_ALGEVO 0.2 // taxa de mutacao // parametro do alg1 a ser modificado 

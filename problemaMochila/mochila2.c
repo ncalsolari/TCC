@@ -251,7 +251,6 @@ int main() {
                 int melhorTodos = 0;
 
                 Individual populacao[populacaoAlgEvo[pop].popSize];
-                Individual melhoresIndividuos[10000]; //max de geracoes q ele vai guardar
 
                 initializePopulation(populacao, populacaoAlgEvo[pop].popSize); //inicializacao da primeira geracao
 
