@@ -228,6 +228,19 @@ Individual mediaIndividuo(Individual melhores[]){
 
 
 int main() {
+
+    char *filename = "MOCHILA.txt";
+
+    // open the file for writing
+    FILE *fp = fopen(filename, "w");
+    if (fp == NULL)
+    {
+        printf("Error opening the file %s", filename);
+        return -1;
+    }
+    
+
+    
     srand(time(NULL));
     IndividualAlgEvo populacaoAlgEvo[POP_SIZE_ALGEVO];
     int controleBest = 0;
@@ -297,6 +310,8 @@ int main() {
         }
 
         melhorAlgEvo = findBestAlgEvo(populacaoAlgEvo,&controleBest);
+        // write to the text file
+        fprintf(fp, "%d, %d, %d;\n",geracao, melhorAlgEvo.fitness, melhorAlgEvo.melhorResultado.fitness);
         for(int pop = 0; pop < POP_SIZE_ALGEVO; pop++){
             if(controleBest != pop){
                 crossoverAlgEvo(&populacaoAlgEvo[pop], melhorAlgEvo);
@@ -319,5 +334,7 @@ int main() {
         }
     }
 
+    // close the file
+    fclose(fp);
     return 0;
 }

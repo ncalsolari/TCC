@@ -213,6 +213,16 @@ int mediaFitness(int melhores[]){
 
 int main() {
 
+    char *filename = "FUNCAO.txt";
+
+    // open the file for writing
+    FILE *fp = fopen(filename, "w");
+    if (fp == NULL)
+    {
+        printf("Error opening the file %s", filename);
+        return -1;
+    }
+
     srand(time(NULL));
     IndividualAlgEvo populacaoAlgEvo[POP_SIZE_ALGEVO];
     int controleBest;
@@ -262,7 +272,8 @@ int main() {
         }
 
         melhorAlgEvo = findBestAlgEvo(populacaoAlgEvo,&controleBest);
-        //melhorAlgEvo = findBestAlgEvo(populacaoAlgEvo,&controleBest);
+        // write to the text file
+        fprintf(fp, "%d, %d, %d;\n",geracao, melhorAlgEvo.fitness, melhorAlgEvo.melhorResultado.fitness);
 
         for(int pop = 0; pop < POP_SIZE_ALGEVO; pop++){
             if(controleBest != pop){
@@ -280,5 +291,7 @@ int main() {
     printf("Melhor de todos\nPopSize: %d\nGeneration: %d\nMutationRate: %lf\nCrossType: %d\nFitness: %d\n", melhorAlgEvo.popSize,melhorAlgEvo.generation,melhorAlgEvo.mutationRate,melhorAlgEvo.crossoverType,melhorAlgEvo.fitness);
     printf("melhor valor x: %lf\nf(x): %lf\n",melhorAlgEvo.melhorResultado.x, melhorAlgEvo.melhorResultado.fitness);
     
+    // close the file
+    fclose(fp);
     return 0;
 }
