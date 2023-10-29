@@ -221,7 +221,6 @@ int main() {
     IndividualAlgEvo melhorAlgEvo = populacaoAlgEvo[0];
 
     Individual melhoresResultados [MEDIA_ALG];
-    int melhoresFitness [MEDIA_ALG];
     int controleFitness = 0;
 
     for(int geracao = 0; geracao < NUM_GENERATIONS_ALGEVO; geracao++){
@@ -248,7 +247,6 @@ int main() {
                 }
 
                 melhoresResultados[x] = melhor;
-                melhoresFitness[x] = controleFitness;
 
             }
             Individual melhor = mediaIndividuo(melhoresResultados);
