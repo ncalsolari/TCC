@@ -3,9 +3,9 @@
 #include <time.h>
 #include <stdbool.h> 
 
-#define POP_SIZE_ALGEVO 100 // Tamanho da população
-#define NUM_GENERATIONS_ALGEVO 100  // Número máximo de gerações
-#define MUTATION_RATE_ALGEVO 0.1  // Taxa de mutação
+#define POP_SIZE_ALGEVO 150 // Tamanho da população
+#define NUM_GENERATIONS_ALGEVO 75  // Número máximo de gerações
+#define MUTATION_RATE_ALGEVO 0.5  // Taxa de mutação
 #define N 50 // Número de cidades
 #define MEDIA_ALG 3
 
@@ -69,8 +69,14 @@ void initializePopulation(Individual populacao[], int popSize) {
 
 
 IndividualAlgEvo findBestAlgEvo(IndividualAlgEvo populacao[],int *best){
-     IndividualAlgEvo melhor = populacao[0];
+    IndividualAlgEvo melhor = populacao[0];
+    int notaMelhor;
+    int notaAtual;
+
     for (int i = 1; i < POP_SIZE_ALGEVO; i++) {//percorre os individuos procurando o melhor
+       // notaMelhor = (1/melhor.fitness)*0.5 + melhor.melhorResultado.fitness*0.5; //media pndereada dos fitness, o 1 eh o inverso pois originalmente quanto menor o valor melhor e aqui eu quero o maior valor sendo melhor, logo 1/(menor Valor)
+       // notaAtual = (1/populacao[i].fitness)*0.5 + populacao[i].melhorResultado.fitness*0.5;
+       // if ((notaAtual > notaMelhor) || (melhor.melhorResultado.fitness == -1)) {
         if (populacao[i].fitness <= melhor.fitness && populacao[i].melhorResultado.fitness <= melhor.melhorResultado.fitness) {
             melhor = populacao[i];
             *best = i;
@@ -253,7 +259,7 @@ Individual mediaIndividuo(Individual melhores[]){
 
 int main() {
 
-    char *filename = "CAIXEIRO.txt";
+    char *filename = "CAIXEIRO5.txt";
 
     // open the file for writing
     FILE *fp = fopen(filename, "w");

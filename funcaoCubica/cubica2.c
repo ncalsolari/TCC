@@ -4,9 +4,9 @@
 #include <time.h>
 #include <limits.h>
 //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   token git
-#define POP_SIZE_ALGEVO 100 //tamanho populacao
-#define NUM_GENERATIONS_ALGEVO 200 // geracoes
-#define MUTATION_RATE_ALGEVO 0.2 // taxa de mutacao // parametro do alg1 a ser modificado 
+#define POP_SIZE_ALGEVO 150 //tamanho populacao
+#define NUM_GENERATIONS_ALGEVO 75 // geracoes
+#define MUTATION_RATE_ALGEVO 0.5 // taxa de mutacao // parametro do alg1 a ser modificado 
 #define TARGET_FITNESS 0.0001 //criterio para validacao da resposta
 #define MEDIA_ALG 3 //algoritmos filhos serao representados pela media deste numero - 2 (pois o melhor e o pior serao removidos)
 
@@ -122,9 +122,15 @@ void mutate(Individual *individual, double mutationRate) {
 }
 
 IndividualAlgEvo findBestAlgEvo(IndividualAlgEvo populacao[],int *best){
-     IndividualAlgEvo melhor = populacao[0];
-     *best = 0;
+    IndividualAlgEvo melhor = populacao[0];
+    *best = 0;
+    int notaMelhor;
+    int notaAtual;
+
     for (int i = 1; i < POP_SIZE_ALGEVO; i++) {//percorre os individuos procurando o melhor
+        //notaMelhor = (1/melhor.fitness)*0.5 + melhor.melhorResultado.fitness*0.5; //media pndereada dos fitness, o 1 eh o inverso pois originalmente quanto menor o valor melhor e aqui eu quero o maior valor sendo melhor, logo 1/(menor Valor)
+        //notaAtual = (1/populacao[i].fitness)*0.5 + populacao[i].melhorResultado.fitness*0.5;
+        //if ((notaAtual > notaMelhor) || (melhor.melhorResultado.fitness == -1)) {
         if (populacao[i].fitness <= melhor.fitness && populacao[i].melhorResultado.fitness <= melhor.melhorResultado.fitness) {
             melhor = populacao[i];
             *best = i;
@@ -213,7 +219,7 @@ int mediaFitness(int melhores[]){
 
 int main() {
 
-    char *filename = "FUNCAO.txt";
+    char *filename = "FUNCAO5.txt";
 
     // open the file for writing
     FILE *fp = fopen(filename, "w");
