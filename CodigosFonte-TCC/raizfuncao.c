@@ -3,17 +3,16 @@
 #include <math.h> 
 #include <time.h>
 #include <limits.h>
-//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   token git
 #define POP_SIZE_ALGEVO 175 //tamanho populacao
 #define NUM_GENERATIONS_ALGEVO 60 // geracoes
 #define MUTATION_RATE_ALGEVO 0.3 // taxa de mutacao // parametro do alg1 a ser modificado 
 #define TARGET_FITNESS 0.0001 //criterio para validacao da resposta
-#define MEDIA_ALG 3 //algoritmos filhos serao representados pela media deste numero - 2 (pois o melhor e o pior serao removidos)
+#define MEDIA_ALG 3 // Algoritmos filhos serao representados pela media deste numero - 2 (pois o melhor e o pior serao removidos)
 
 
 
 typedef struct {
-    double x;
+    double x; // Gene dos individuos do Algoritmo Filho
     double fitness;
 } Individual;
 
@@ -83,44 +82,58 @@ void crossover(Individual *individual, Individual best){// media entre melhor de
 void mutateAlgEvo(IndividualAlgEvo *individual){
     if ((double)rand() / RAND_MAX < MUTATION_RATE_ALGEVO) {//respeitando a taxa de mutacao acrescenta um pequeno valor ao individuo
         if((int)rand() % 2){
-            individual->popSize += ((double)rand() / RAND_MAX) * (individual->popSize/5);// parametro do alg1 a ser modificado   
+            individual->popSize += ((double)rand() / RAND_MAX) * (individual->popSize/5);
 
         }else{
-            individual->popSize -= ((double)rand() / RAND_MAX) * (individual->popSize/5);// parametro do alg1 a ser modificado   
+            individual->popSize -= ((double)rand() / RAND_MAX) * (individual->popSize/5);   
         }
     }
 
     if ((double)rand() / RAND_MAX < MUTATION_RATE_ALGEVO) {//respeitando a taxa de mutacao acrescenta um pequeno valor ao individuo
         if((int)rand() % 2){
-            individual->generation += ((double)rand() / RAND_MAX) * (individual->generation/5);// parametro do alg1 a ser modificado   
+            individual->generation += ((double)rand() / RAND_MAX) * (individual->generation/5);
 
         }else{
-            individual->generation -= ((double)rand() / RAND_MAX) * (individual->generation/5);// parametro do alg1 a ser modificado   
+            individual->generation -= ((double)rand() / RAND_MAX) * (individual->generation/5);  
         }
     }
 
     if ((double)rand() / RAND_MAX < MUTATION_RATE_ALGEVO) {//respeitando a taxa de mutacao acrescenta um pequeno valor ao individuo
         if((int)rand() % 2){
-            individual->mutationRate += ((double)rand() / RAND_MAX) * (individual->mutationRate/5);// parametro do alg1 a ser modificado 
+            individual->mutationRate += ((double)rand() / RAND_MAX) * (individual->mutationRate/5); 
         }else{
-            individual->mutationRate -= ((double)rand() / RAND_MAX) * (individual->mutationRate/5);// parametro do alg1 a ser modificado   
+            individual->mutationRate -= ((double)rand() / RAND_MAX) * (individual->mutationRate/5);
         }
     }
 
     if ((double)rand() / RAND_MAX < MUTATION_RATE_ALGEVO) {//respeitando a taxa de mutacao acrescenta um pequeno valor ao individuo
-        individual->crossoverType = 1 - individual->crossoverType ;// parametro do alg1 a ser modificado 
+        individual->crossoverType = 1 - individual->crossoverType ;
         
     }
 }
 
 void mutate(Individual *individual, double mutationRate) {
     if ((double)rand() / RAND_MAX < mutationRate) {//respeitando a taxa de mutacao acrescenta um pequeno valor ao individuo
-        individual->x += ((double)rand() / RAND_MAX * 2.0 - 1.0) * 0.1;// parametro do alg1 a ser modificado 
+        individual->x += ((double)rand() / RAND_MAX * 2.0 - 1.0) * 0.1; 
         individual->fitness = evaluateFitness(individual->x);
     }
 }
 
-IndividualAlgEvo findBestAlgEvo(IndividualAlgEvo populacao[],int *best){
+IndividualAlgEvo findBestAlgEvo(IndividualAlgEvo populacao[],int *best){//selecao por equilibrio
+    IndividualAlgEvo melhor = populacao[0];
+    *best = 0;
+
+    for (int i = 1; i < POP_SIZE_ALGEVO; i++) {//percorre os individuos procurando o melhor
+    
+        if (populacao[i].fitness <= melhor.fitness && populacao[i].melhorResultado.fitness <= melhor.melhorResultado.fitness) {
+            melhor = populacao[i];
+            *best = i;
+        }
+    }
+    return melhor;
+}
+
+/*IndividualAlgEvo findBestAlgEvo(IndividualAlgEvo populacao[],int *best){//selecao ponderada
     IndividualAlgEvo melhor = populacao[0];
     *best = 0;
     double notaMelhor;
@@ -130,13 +143,12 @@ IndividualAlgEvo findBestAlgEvo(IndividualAlgEvo populacao[],int *best){
         notaMelhor = melhor.fitness*0.5 + melhor.melhorResultado.fitness*0.5; //media pndereada dos fitness, o 1 eh o inverso pois originalmente quanto menor o valor melhor e aqui eu quero o maior valor sendo melhor, logo 1/(menor Valor)
         notaAtual = populacao[i].fitness*0.5 + populacao[i].melhorResultado.fitness*0.5;
         if (notaAtual < notaMelhor) {
-       // if (populacao[i].fitness <= melhor.fitness && populacao[i].melhorResultado.fitness <= melhor.melhorResultado.fitness) {
             melhor = populacao[i];
             *best = i;
         }
     }
     return melhor;
-}
+}*/
 
 Individual findBest(Individual populacao[], int popSize, int* controleFitness) {
     Individual melhor = populacao[0];
@@ -150,9 +162,9 @@ Individual findBest(Individual populacao[], int popSize, int* controleFitness) {
 }
 
 Individual mediaIndividuo(Individual melhores[]){
-    Individual melhor = melhores[0]; //vasculho pelo melhor
+    Individual melhor = melhores[0]; 
     int indiceMelhor = 0;
-    for(int i = 1; i<MEDIA_ALG; i++){
+    for(int i = 1; i<MEDIA_ALG; i++){// separa o melhor para eliminacao
         if(melhores[i].fitness < melhor.fitness){
             melhor = melhores[i];
             indiceMelhor = i;
@@ -161,7 +173,7 @@ Individual mediaIndividuo(Individual melhores[]){
 
     Individual pior = melhores[0];
     int indicePior = 0;
-    for(int i = 1; i<MEDIA_ALG; i++){
+    for(int i = 1; i<MEDIA_ALG; i++){// separa o pior para eliminacao
         if(melhores[i].fitness > pior.fitness){
             pior = melhores[i];
             indicePior = i;
@@ -169,7 +181,7 @@ Individual mediaIndividuo(Individual melhores[]){
     }
 
     Individual media;
-    for(int i = 0; i<MEDIA_ALG; i++){
+    for(int i = 0; i<MEDIA_ALG; i++){// elimina pior e melhor
         if(i != indiceMelhor && i != indicePior){
             media.fitness = melhores[i].fitness;
             media.x = melhores[i].x;
@@ -181,46 +193,13 @@ Individual mediaIndividuo(Individual melhores[]){
 
 }
 
-int mediaFitness(int melhores[]){
-    int melhor = melhores[0]; //vasculho pelo melhor
-    int indiceMelhor;
-    for(int i = 1; i<MEDIA_ALG; i++){
-        if(melhores[i] < melhor){
-            melhor = melhores[i];
-            indiceMelhor = i;
-        }
-    }
-
-    int pior = melhores[0];
-    int indicePior;
-    for(int i = 1; i<MEDIA_ALG; i++){
-        if(melhores[i] > pior){
-            pior = melhores[i];
-            indicePior = i;
-        }
-    }
-
-    int media;
-    for(int i = 1; i<MEDIA_ALG; i++){
-        if(i != indiceMelhor && i != indicePior){
-            media += melhores[i];
-
-        }
-    }
-
-    media = media/(MEDIA_ALG-2);
-
-    return media;
-
-}
-
 
 
 int main() {
 
     char *filename = "FUNCAONOVAAVALIACAO2.txt";
 
-    // open the file for writing
+    // abre arquivo para escrita
     FILE *fp = fopen(filename, "w");
     if (fp == NULL)
     {
@@ -228,6 +207,7 @@ int main() {
         return -1;
     }
 
+    //inicializa variaveis do AP
     srand(time(NULL));
     IndividualAlgEvo populacaoAlgEvo[POP_SIZE_ALGEVO];
     int controleBest;
@@ -238,21 +218,20 @@ int main() {
     Individual melhoresResultados [MEDIA_ALG];
     int controleFitness = 0;
 
-    for(int geracao = 0; geracao < NUM_GENERATIONS_ALGEVO; geracao++){
+    for(int geracao = 0; geracao < NUM_GENERATIONS_ALGEVO; geracao++){ //para cada NUM_GENERATIONS geracoes de POP_SIZE populacoes 
         for(int pop = 0; pop < POP_SIZE_ALGEVO; pop++){
             for(int x = 0; x < MEDIA_ALG; x ++){
-
+                //simulacao de cada individuo do AP
+                //inicializa variaveis do AF
                 Individual populacao[populacaoAlgEvo[pop].popSize];
                 controleFitness = 0;
-        
                 initializePopulation(populacao,populacaoAlgEvo[pop].popSize);
 
                 Individual melhor = findBest(populacao,populacaoAlgEvo[pop].popSize, &controleFitness);//melhor da primeira geracao
         
-                // while(melhor.fitness>TARGET_FITNESS && controleFitness>0){
-                for(int j = 0; j < populacaoAlgEvo[pop].generation; j ++){
+                for(int j = 0; j < populacaoAlgEvo[pop].generation; j ++){//para cada geracao e populacao definidas nos alelos dos individuos do AP, que representam uma simulacao do AF
 
-                    for (int i = 0; i < populacaoAlgEvo[pop].popSize; i++) {
+                    for (int i = 0; i < populacaoAlgEvo[pop].popSize; i++) {//crossover e mutacao
                         crossover(&populacao[i], melhor);
                         mutate(&populacao[i],populacaoAlgEvo[pop].mutationRate);
                         populacao[i].fitness = evaluateFitness(populacao[i].x);
@@ -265,8 +244,8 @@ int main() {
 
             }
             Individual melhor = mediaIndividuo(melhoresResultados);
-            populacaoAlgEvo[pop].melhorResultado = mediaIndividuo(melhoresResultados); //melhor; //o melhor resultado alcançado
-            populacaoAlgEvo[pop].fitness = controleFitness; //mediaFitness(melhoresFitness); //controleFitness; //o nmero de avaliaçoes feitas
+            populacaoAlgEvo[pop].melhorResultado = mediaIndividuo(melhoresResultados); //o melhor resultado alcançado
+            populacaoAlgEvo[pop].fitness = controleFitness; //o nmero de avaliaçoes feitas
             if(melhor.fitness>6){
                 int a;
                 a= 2;
@@ -277,7 +256,7 @@ int main() {
         }
 
         melhorAlgEvo = findBestAlgEvo(populacaoAlgEvo,&controleBest);
-        // write to the text file
+        // escreve no arquivo
         fprintf(fp, "%d, %d, %lf;\n",geracao, melhorAlgEvo.fitness, melhorAlgEvo.melhorResultado.fitness);
 
         for(int pop = 0; pop < POP_SIZE_ALGEVO; pop++){
@@ -296,7 +275,7 @@ int main() {
     printf("Melhor de todos\nPopSize: %d\nGeneration: %d\nMutationRate: %lf\nCrossType: %d\nFitness: %d\n", melhorAlgEvo.popSize,melhorAlgEvo.generation,melhorAlgEvo.mutationRate,melhorAlgEvo.crossoverType,melhorAlgEvo.fitness);
     printf("melhor valor x: %lf\nf(x): %lf\n",melhorAlgEvo.melhorResultado.x, melhorAlgEvo.melhorResultado.fitness);
     
-    // close the file
+    // fecha o arquivo
     fclose(fp);
     return 0;
 }
@@ -309,24 +288,8 @@ int main() {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 /*
-
+//Algoritmo Filho o qual resolve o problema da raiz de funao sem o Algoritmo Pai implementado
 int main() {
 
     srand(time(NULL));
