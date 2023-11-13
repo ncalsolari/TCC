@@ -6,6 +6,8 @@
 Aprimoramento de parâmetros de algoritmos evolutivos para resolução de problemas complexos.
 
 <hr>
+<h3>Códigos Fontes</h3>
+<p>Os códigos-fontes finais estão na pasta "Códigos Fontes", existem 3 códigos, um para cada problema trivial apresentado. Em código está implementado a versão com o Algoritmo Pai melhorando a eficiência dos Algoritmos Filhos que por sua vez resolvem os problemas em questão. As funções com sufixo "AlgEvo" representam as funções do Algoritmo Pai e estão padronizadas nos 3 códigos, as funções sem tal sufixo compreendem as funções dos Algoritmos Filhos, as quais seguem o mesmo padrão de lógica mas possuem variâncias para se adaptar a resolução de cada problema aqui tratado.</p>
 
 <h3>Descrição:</h3>
 <p>A idéia consiste em aplicar técnicas de computação evolutiva em cima dos parâmetros de um algoritmo evolutivo funcional. Para isso foram implementados 3 algoritmos evolutivos filhos para 3 problemas distintos (problema do caixeiro viajante, problema da mochila e raiz de equação cúbica)</p>
@@ -21,8 +23,5 @@ Tipo de crossover<br>
 
 <hr>
 
-<h3>Comentários:</h3>
 
-<p>Para os problemas do caixeiro viajante e da mochila tem-se implementada uma versão não tão complexa do problema (poucas variáveis) fazendo com que a solução mais efetiva seja encontrada antes de qualquer melhora significativa possa ser identificada, tem-se então como próximo passo aumentar a complexidade dos mesmos (aumentando a quantidades de cidades do caixeiro viajante e a quantidade de objetos da mochila) para seguir com a fase de testes de eficiência.</p>
-
-atualizado em 28/09/2023
+atualizado em 13/11/2023
